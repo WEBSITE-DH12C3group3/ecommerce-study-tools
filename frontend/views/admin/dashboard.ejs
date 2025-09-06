@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trang quản trị Admin</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 80px auto;
+      padding: 15px;
+      background-color: #f5f7fa;
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 50px;
+      color: #007bff;
+      font-weight: 700;
+      font-size: 32px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    a.btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 18px 0;
+      font-size: 22px;
+      font-weight: 700;
+      border-radius: 8px;
+      color: white;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      box-shadow: 0 3px 8px rgba(0, 123, 255, 0.4);
+    }
+    a.btn-products {
+      background-color: #007bff;
+    }
+    a.btn-products:hover {
+      background-color: #0056b3;
+      box-shadow: 0 5px 14px rgba(0, 86, 179, 0.5);
+    }
+    a.btn-categories {
+      background-color: #28a745;
+      box-shadow: 0 3px 8px rgba(40, 167, 69, 0.4);
+    }
+    a.btn-categories:hover {
+      background-color: #1e7e34;
+      box-shadow: 0 5px 14px rgba(30, 126, 52, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <h1>Trang quản trị Admin</h1>
+
+  <div class="buttons">
+    <a href="/admin/products" class="btn btn-products">Quản lý Sản phẩm</a>
+    <a href="/admin/category" class="btn btn-categories">Quản lý Danh mục</a> 
+    <a href="/admin/static" class="btn btn-categories">Thống kê</a> 
+    <a href="/admin/users" class="btn btn-categories">Quản lý Người dùng</a> 
+    <a href="/admin/roles" class="btn btn-categories">Quản lý Nhóm Người dùng</a> 
+    <a href="/admin/purchases" class="btn btn-categories">Nhập kho</a> 
+  </div>
+</body>
+</html>

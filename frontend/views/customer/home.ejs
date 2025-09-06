@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HocTapStore - Đồ Dùng Học Tập</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap CSS CDN for carousel -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS for carousel -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        /* Custom styles for animations and overrides */
+        .product-card:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        /* Pastel color scheme */
+        body { background-color: #f9fafb; }
+        .pastel-blue { background-color: #bfdbfe; }
+        .pastel-pink { background-color: #fce7f3; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <!-- Include Header -->
+    <%- include('../partials/header') %>
+
+    <!-- Home Page Content -->
+    <main>
+        <!-- Hero Section: Slider with Bootstrap Carousel, fade-in animation -->
+        <section class="relative">
+            <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="https://via.placeholder.com/1920x600?text=Khuyen+Mai+Back+To+School" class="w-full h-96 object-cover animate__animated animate__fadeIn" alt="Promotion 1">
+                        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                            <div class="text-center text-white">
+                                <h1 class="text-4xl font-bold">Back to School - Giảm 20%</h1>
+                                <p class="text-xl">Mua ngay đồ dùng học tập chất lượng cao!</p>
+                                <a href="/shop" class="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Mua ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://via.placeholder.com/1920x600?text=San+Pham+Moi" class="w-full h-96 object-cover animate__animated animate__fadeIn" alt="Promotion 2">
+                        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                            <div class="text-center text-white">
+                                <h1 class="text-4xl font-bold">Sản phẩm mới</h1>
+                                <p class="text-xl">Bút chì, sổ tay, balo thời trang</p>
+                                <a href="/new" class="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">Khám phá</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Featured Products: Grid with hover effects -->
+        <section class="container mx-auto px-4 py-12">
+            <h2 class="text-3xl font-bold text-center mb-8 fade-in">Sản phẩm nổi bật</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+
+            </div>
+        </section>
+
+        <!-- Categories Section: Icons with pastel backgrounds -->
+        <section class="pastel-blue py-12">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-8 fade-in">Danh mục sản phẩm</h2>
+                <div id="category-list" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Danh mục sẽ được thêm động bởi categories.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials: Simple quotes -->
+        <section class="container mx-auto px-4 py-12">
+            <h2 class="text-3xl font-bold text-center mb-8 fade-in">Khách hàng nói gì</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            </div>
+        </section>
+
+        <!-- Newsletter Signup -->
+        <section class="pastel-pink py-12">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-4 fade-in">Đăng ký nhận tin</h2>
+                <p class="text-gray-600 mb-6">Nhận ưu đãi và cập nhật sản phẩm mới nhất!</p>
+                <form action="/subscribe" method="POST" class="flex justify-center">
+                    <input type="email" name="email" placeholder="Email của bạn" class="px-4 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-pink-500 w-64">
+                    <button type="submit" class="px-6 py-2 bg-pink-600 text-white rounded-r-md hover:bg-pink-700">Đăng ký</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Include Footer -->
+    <%- include('../partials/footer') %>
+</body>
+</html>
