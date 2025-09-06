@@ -26,7 +26,6 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        /* Pastel color scheme */
         body { background-color: #f9fafb; }
         .pastel-blue { background-color: #bfdbfe; }
         .pastel-pink { background-color: #fce7f3; }
@@ -38,7 +37,7 @@
 
     <!-- Home Page Content -->
     <main>
-        <!-- Hero Section: Slider with Bootstrap Carousel, fade-in animation -->
+        <!-- Hero Section: Slider with Bootstrap Carousel -->
         <section class="relative">
             <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
@@ -72,29 +71,29 @@
             </div>
         </section>
 
-        <!-- Featured Products: Grid with hover effects -->
+        <!-- Featured Products -->
         <section class="container mx-auto px-4 py-12">
             <h2 class="text-3xl font-bold text-center mb-8 fade-in">Sản phẩm nổi bật</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-
+            <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Sản phẩm sẽ được thêm động bởi products.js -->
             </div>
         </section>
 
-        <!-- Categories Section: Icons with pastel backgrounds -->
+        <!-- Categories Section -->
         <section class="pastel-blue py-12">
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold text-center mb-8 fade-in">Danh mục sản phẩm</h2>
                 <div id="category-list" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Danh mục sẽ được thêm động bởi categories.js -->
+                    <!-- Danh mục được thêm động bởi category.js -->
                 </div>
             </div>
         </section>
 
-        <!-- Testimonials: Simple quotes -->
+        <!-- Testimonials -->
         <section class="container mx-auto px-4 py-12">
             <h2 class="text-3xl font-bold text-center mb-8 fade-in">Khách hàng nói gì</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
+            <div id="testimonials" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Đánh giá sẽ được thêm động bởi testimonials.js -->
             </div>
         </section>
 
@@ -113,5 +112,9 @@
 
     <!-- Include Footer -->
     <%- include('../partials/footer') %>
+
+    <!-- Scripts -->
+    <script src="/js/customer/category.js"></script>
 </body>
 </html>
+```

@@ -1,13 +1,15 @@
-// public/js/customer/categories.js
 document.addEventListener("DOMContentLoaded", () => {
   fetchCategories();
 });
 
 async function fetchCategories() {
   try {
+    console.log("Đang gọi API /api/customer/categories");
     const response = await fetch("/api/customer/categories");
+    console.log("Response status:", response.status, "Response:", response);
     if (!response.ok) throw new Error("Lỗi khi lấy danh sách danh mục");
     const categories = await response.json();
+    console.log("Dữ liệu danh mục:", categories);
     renderCategories(categories);
   } catch (error) {
     console.error("Lỗi:", error);
@@ -17,6 +19,10 @@ async function fetchCategories() {
 
 function renderCategories(categories) {
   const categoryContainer = document.querySelector("#category-list");
+  if (!categoryContainer) {
+    console.error("Không tìm thấy #category-list");
+    return;
+  }
   if (!categories || categories.length === 0) {
     categoryContainer.innerHTML = '<p class="text-center text-gray-500">Không có danh mục nào!</p>';
     return;
@@ -35,7 +41,6 @@ function renderCategories(categories) {
     .join("");
 }
 
-// Hàm bảo vệ XSS
 function escapeHTML(str) {
   const div = document.createElement("div");
   div.textContent = str;

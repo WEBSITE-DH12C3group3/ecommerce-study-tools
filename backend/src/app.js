@@ -5,6 +5,7 @@ const session = require("express-session");
 require("dotenv").config();
 
 const categoryRoutes = require("./routes/categoryRoutes");
+const sequelize = require("./config/db");
 
 const app = express();
 
@@ -12,7 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../../frontend/public")));
 
 // Cấu hình session
 app.use(
@@ -28,6 +29,14 @@ app.use(
 app.set("views", path.join(__dirname, "../../frontend/views"));
 app.set("view engine", "ejs");
 
+// Đồng bộ database
+sequelize.authenticate()
+  .then(() => console.log("Kết nối DB thành công"))
+  .catch(err => console.error("Lỗi DB:", err));
+sequelize.sync({ force: false })
+  .then(() => console.log("Database synced"))
+  .catch(err => console.error("Lỗi đồng bộ DB:", err));
+
 // Routes
 app.use("/api", categoryRoutes);
 
@@ -38,7 +47,7 @@ app.get("/", (req, res) => {
 
 // Admin pages
 app.get("/admin/categories", (req, res) => {
-  res.render("admin/category/categories");
+  res.render("admin/categories");
 });
 
 module.exports = app;
