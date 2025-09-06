@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:4000/api/categories"; // endpoint backend
+const API_URL = "http://localhost:8080/api/categories"; // endpoint backend
 
 const categoryForm = document.getElementById("categoryForm");
 const categoryTable = document.querySelector("#categoryTable tbody");

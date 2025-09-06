@@ -23,17 +23,17 @@ app.set("view engine", "ejs");
 // API
 app.use("/api/categories", categoryRoutes);
 
+// Trang chủ
+app.get("/", (req, res) => {
+  res.redirect("/admin/categories");
+});
+
 // Admin pages
 app.get("/admin/categories", (req, res) => {
-  res.render("admin/categories");
+  res.render("admin/category/categories");
 });
 
 // Customer pages (ví dụ sau này)
-app.get("/", (req, res) => {
-  res.render("customer/home"); // bạn sẽ tạo file home.ejs trong customer
-});
 
-// API
-app.use("/api/categories", categoryRoutes);
 
 module.exports = app;
