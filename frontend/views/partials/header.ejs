@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+  <link rel="icon" type="image/png" href="/images/Eden.png" />
+  <link rel="stylesheet" href="/mycss/form.css">
+  <link rel="stylesheet" href="/mycss/styleheader.css">
+  <link rel="stylesheet" href="/mycss/style.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/assets/owlcarousel/assets/owl.carousel.min.css">
+  <link rel="stylesheet" href="/assets/owlcarousel/assets/owl.theme.default.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Link Swiper's CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <!-- Link SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"/>
+  <!-- CSS tùy chỉnh cho SweetAlert2 toast và font -->
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    .swal2-custom-toast {
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <header class="myheader sticky" id="myHeader">
+    <div class="container py-3">
+      <div class="row align-items-center">
+        <!-- Logo -->
+        <div class="col-md-3 col-4 text-center text-md-start mb-3 mb-md-0">
+          <a href="/">
+            <img
+              src="/images/logo1.png"
+              class="img-fluid"
+              width="200px"
+              height="auto"
+              alt="Logo" />
+          </a>
+        </div>
+        <!-- Search Bar -->
+        <div class="col-md-5 col-4 mb-3 mb-md-0">
+          <form method="get" action="" class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Tìm Kiếm"
+              aria-label="Tìm Kiếm"
+              aria-describedby="basic-addon2"
+              name="q"
+              maxlength="220" />
+            <button
+              class="btn btn-outline-secondary"
+              type="submit"
+              id="basic-addon2">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </form>
+        </div>
+        <!-- Cart and Account Section -->
+        <div class="col-md-4 col-4">
+          <div class="d-flex justify-content-center justify-content-md-end align-items-center">
+            <div class="col-6">
+              <div class="me-4 position-relative text-center">
+                <a href="/cart" class="position-relative text-dark">
+                  <span class="fs-2" id="cart"><i class="fa-solid fa-bag-shopping"></i></span>
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
+                    <%= cart && cart.length > 0 ? cart.reduce((sum, i) => sum + i.quantity, 0) : 0 %>
+                  </span>
+                </a>
+                <div class="text-muted">
+                  <b>Giỏ Hàng</b>
+                </div>
+              </div>
+            </div>
+            <!-- Account -->
+            <div class="col-6">
+              <div class="fs-3"></div>
+              <% if (!user) { %>
+                <div class="dropdown nav-item">
+                  <a
+                    class="btn btn-secondary dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="fa-regular fa-user"></i> Tài khoản
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="/registers">
+                        <i class="fa-regular fa-pen-to-square"></i> Đăng ký
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="/login">
+                        <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              <% } else { %>
+                <div class="dropdown nav-item">
+                  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fa-regular fa-user"></i>
+                    <% if (user && user.full_name) { %>
+                      <%= user.full_name.length > 10 
+                            ? user.full_name.substring(0, 10) + "..." 
+                            : user.full_name %>
+                    <% } else { %>
+                      Tài khoản
+                    <% } %>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="/personal">
+                        <i class="fa-regular fa-address-card"></i> Trang cá nhân
+                      </a>
+                    </li>
+                    <% if (user && user.role && user.role !== "2") { %>
+                      <li>
+                        <a class="dropdown-item" href="/admin">
+                          <i class="fa-solid fa-gauge"></i> Quản lý
+                        </a>
+                      </li>
+                    <% } %>
+                    <li>
+                      <a class="dropdown-item" href="/logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Navigation Bar -->
+  <section class="mymainmenu" style="background-color: #3b82f6; border-radius: 5px;">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg">
+        <span class="navbar-brand" style="color: #ffffff;" href="#"><b>EDEN</b></span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav d-flex justify-content-around w-100">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/" style="color: #ffffff;"><b>Trang Chủ</b></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/liked" style="color: #ffffff;"><b>Yêu thích</b></a>
+            </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #ffffff;">
+                  <b>Danh mục</b>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <?php foreach ($categories as $category): ?>
+                    <li><a class="dropdown-item" href="category.php?id=<?php echo $category['id']; ?>&category_name=<?php echo $category['category_name']; ?>"><?php echo htmlspecialchars($category['category_name']); ?></a></li>
+                  <?php endforeach; ?>
+                </ul>
+              </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/supasale" style="color: #ffffff;"><b>Siêu sale</b></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/partials/contact" style="color: #ffffff;"><b>Liên hệ</b></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about" style="color: #ffffff;"><b>Về chúng tôi</b></a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </section>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    let lastScrollTop = 0;
+    const header = document.getElementById("myHeader");
+    window.addEventListener("scroll", function() {
+      const currentScroll = window.pageYOffset;
+      if (currentScroll > lastScrollTop) {
+        header.classList.add("hidden");
+      } else {
+        header.classList.remove("hidden");
+        header.classList.add("sticky");
+      }
+      lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    });
+  </script>
+
+    <!-- AJAX Add to Cart -->
+  <script>
+    function attachCartEvent() {
+      document.querySelectorAll(".btn-add-cart").forEach(btn => {
+        btn.removeEventListener("click", handleAddToCart);
+        btn.addEventListener("click", handleAddToCart);
+      });
+    }
+
+    async function handleAddToCart(e) {
+      e.preventDefault();
+      const productId = e.currentTarget.dataset.id;
+      console.log("Adding product:", productId);
+      try {
+        const res = await fetch(`/cart/add/${productId}`, { 
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+        console.log("Response:", data);
+        if (data.success) {
+          const cartCountEls = document.querySelectorAll("#cart-count, .cart-badge");
+          cartCountEls.forEach(el => {
+            el.textContent = data.cartCount;
+          });
+          Swal.fire({
+            icon: 'success',
+            title: 'Thành công!',
+            text: 'Sản phẩm đã được thêm vào giỏ hàng!',
+            showConfirmButton: false,
+            timer: 2000,
+            toast: true,
+            position: 'top-end',
+            background: '#fff',
+            iconColor: '#22c55e',
+            customClass: {
+              popup: 'swal2-custom-toast'
+            }
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi!',
+            text: data.message || 'Không thể thêm vào giỏ hàng',
+            showConfirmButton: false,
+            timer: 2000,
+            toast: true,
+            position: 'top-end',
+            background: '#fff',
+            iconColor: '#e63946'
+          });
+        }
+      } catch (err) {
+        console.error("Lỗi AJAX:", err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi!',
+          text: 'Không thể kết nối đến server: ' + err.message,
+          showConfirmButton: false,
+          timer: 2000,
+          toast: true,
+          position: 'top-end',
+          background: '#fff',
+          iconColor: '#e63946'
+        });
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", attachCartEvent);
+    const observer = new MutationObserver(() => {
+      attachCartEvent();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
+
+  
+</body>
+</html>

@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+<body style="margin-top: 120px;">
+  <div class="container mt-5" style="margin-top:150px;">
+  <div class="header text-center mb-4">
+    <h2>Liên Hệ Với Eden Stationery</h2>
+    <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn trong việc chọn lựa đồ dùng học tập!</p>
+  </div>
+
+  <% if (success) { %>
+    <div class="alert alert-success text-center">
+      Cảm ơn bạn! Tin nhắn của bạn đã được gửi thành công.
+    </div>
+  <% } %>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="contact-form bg-white p-4 rounded shadow">
+        <form method="POST" action="/partials/contact">
+          <div class="form-group">
+            <label for="name">Tên của bạn</label>
+            <input type="text" class="form-control" id="name" name="name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Số điện thoại</label>
+            <input type="text" class="form-control" id="phone" name="phone" required />
+          </div>
+
+          <div class="form-group">
+            <label for="message">Nội dung liên hệ</label>
+            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Gửi</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+<%- include('../partials/footer') %>
