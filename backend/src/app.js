@@ -9,7 +9,9 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const authRoutes = require("./routes/authRoutes");
 const sequelize = require("./config/db");
 const adminRoutes = require("./routes/adminRoutes");
+const productRoutes = require("./routes/productRoutes");
 
+const productController = require("./controllers/productController");
 const app = express();
 
 // Middleware
@@ -17,7 +19,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../../frontend/public")));
-
 
 // Cấu hình session
 app.use(
@@ -45,10 +46,36 @@ sequelize.sync({ force: false })
 app.use("/api", categoryRoutes);
 app.use("/api", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api", productRoutes);
 
 // Trang chủ
 app.get("/", (req, res) => {
   res.render("customer/home", { session: req.session });
+});
+
+// Trang danh mục sản phẩm
+app.get("/products", async (req, res) => {
+  const categoryId = req.query.category_id;
+  const categoryName = req.query.category_name || "Sản phẩm";
+
+  try {
+    // Gọi hàm getProducts từ productController
+    const { products } = await productController.getProducts(req, res);
+    res.render("customer/category_products", {
+      session: req.session,
+      categoryId,
+      categoryName,
+      products, // Truyền products vào template
+    });
+  } catch (err) {
+    console.error("Lỗi khi lấy sản phẩm:", err);
+    res.render("customer/category_products", {
+      session: req.session,
+      categoryId,
+      categoryName,
+      products: [], // Truyền mảng rỗng nếu có lỗi
+    });
+  }
 });
 
 // Trang đăng ký
@@ -61,7 +88,7 @@ app.get("/login", (req, res) => {
   res.render("customer/login", { session: req.session });
 });
 
-// đăng xuất
+// Đăng xuất
 app.get("/logout", (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -73,13 +100,11 @@ app.get("/logout", (req, res) => {
 });
 
 // Admin pages
-// Admin routes
 app.get("/admin", isAdmin, (req, res) => {
   res.redirect("/admin/dashboard");
 });
 app.get("/admin/dashboard", isAdmin, (req, res) => {
   res.render("admin/dashboard", { session: req.session });
 });
-
 
 module.exports = app;
