@@ -7,11 +7,12 @@ require("dotenv").config();
 
 const categoryRoutes = require("./routes/categoryRoutes");
 const authRoutes = require("./routes/authRoutes");
-const sequelize = require("./config/db");
-const adminRoutes = require("./routes/adminRoutes");
-const productRoutes = require("./routes/productRoutes");
-
+const productRoutes = require("./routes/productRoutes"); // Đã có
+const brandRoutes = require("./routes/brandRoutes");
 const productController = require("./controllers/productController");
+
+const sequelize = require("./config/db");
+
 const app = express();
 
 // Middleware
@@ -45,8 +46,8 @@ sequelize.sync({ force: false })
 // Routes
 app.use("/api", categoryRoutes);
 app.use("/api", authRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api", productRoutes);
+app.use("/api", brandRoutes);
+app.use("/api", productRoutes); // Mount productRoutes cho cả customer và admin
 
 // Trang chủ
 app.get("/", (req, res) => {
@@ -54,18 +55,26 @@ app.get("/", (req, res) => {
 });
 
 // Trang danh mục sản phẩm
+const { Product, Category, Brand } = require("./models");
+
 app.get("/products", async (req, res) => {
   const categoryId = req.query.category_id;
   const categoryName = req.query.category_name || "Sản phẩm";
-
   try {
-    // Gọi hàm getProducts từ productController
-    const { products } = await productController.getProducts(req, res);
+    // Lấy dữ liệu trực tiếp từ model thay vì gọi getProducts (vì cái đó dành cho API)
+    const products = await Product.findAll({
+      where: categoryId ? { category_id: categoryId } : {},
+      include: [
+        { model: Category, as: "Category", required: false },
+        { model: Brand, as: "Brand", required: false },
+      ],
+    });
+
     res.render("customer/category_products", {
       session: req.session,
       categoryId,
       categoryName,
-      products, // Truyền products vào template
+      products,
     });
   } catch (err) {
     console.error("Lỗi khi lấy sản phẩm:", err);
@@ -73,10 +82,11 @@ app.get("/products", async (req, res) => {
       session: req.session,
       categoryId,
       categoryName,
-      products: [], // Truyền mảng rỗng nếu có lỗi
+      products: [],
     });
   }
 });
+
 
 // Trang đăng ký
 app.get("/register", (req, res) => {
@@ -105,6 +115,10 @@ app.get("/admin", isAdmin, (req, res) => {
 });
 app.get("/admin/dashboard", isAdmin, (req, res) => {
   res.render("admin/dashboard", { session: req.session });
+});
+
+app.get("/admin/products", isAdmin, (req, res) => {
+  res.render("admin/product/products", { session: req.session });
 });
 
 module.exports = app;

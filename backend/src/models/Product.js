@@ -34,6 +34,14 @@ const Product = sequelize.define(
         key: "category_id",
       },
     },
+    brand_id: {  // Thêm cột brand_id
+      type: DataTypes.INTEGER,
+      allowNull: true,  // Có thể null nếu sản phẩm không có thương hiệu
+      references: {
+        model: "brands",
+        key: "brand_id",
+      },
+    },
     created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
