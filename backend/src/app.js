@@ -5,6 +5,8 @@ const session = require("express-session");
 require("dotenv").config();
 
 const categoryRoutes = require("./routes/categoryRoutes");
+const authRoutes = require('./routes/authRoutes');
+
 const sequelize = require("./config/db");
 
 const app = express();
@@ -39,10 +41,21 @@ sequelize.sync({ force: false })
 
 // Routes
 app.use("/api", categoryRoutes);
+app.use("/api", authRoutes);
 
 // Trang chủ
 app.get("/", (req, res) => {
   res.render("customer/home");
+});
+
+// Trang đăng ký
+app.get("/register", (req, res) => {
+  res.render("customer/register");
+});
+
+// Trang đăng nhập
+app.get("/login", (req, res) => {
+  res.render("customer/login");
 });
 
 // Admin pages
