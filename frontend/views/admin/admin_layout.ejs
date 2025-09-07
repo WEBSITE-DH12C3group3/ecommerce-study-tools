@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | HocTapStore Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Header -->
+  <%- include('../partials/admin_header') %>
+
+  <div class="flex pt-16"> <!-- pt-16 để tránh header fixed -->
+    <!-- Sidebar -->
+    <%- include('../partials/admin_sidebar') %>
+
+    <!-- Nội dung chính -->
+    <main class="flex-1 ml-0 lg:ml-64 p-6 transition-all duration-300">
+      <%- body %>
+    </main>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('-translate-x-full');
+    }
+  </script>
+</body>
+</html>

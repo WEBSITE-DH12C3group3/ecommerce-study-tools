@@ -1,50 +1,86 @@
 body {
-  background: linear-gradient(135deg, #e0f7fa 0%, #fff3e0 100%);
+  background-color: #ffffff;
+  margin: 0;
+  padding-top: 60px;
 }
-.sidebar {
-  transition: width 0.3s ease;
+header {
+  height: 60px;
 }
-.sidebar.collapsed {
-  width: 60px;
+aside {
+  top: 60px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateX(0);
+  transition: transform 0.3s ease, width 0.3s ease;
 }
-.sidebar.collapsed .nav-link span {
+aside.-translate-x-full {
+  transform: translateX(-100%);
+}
+aside.w-16 .sidebar span {
   display: none;
 }
-.card {
-  border-radius: 0.5rem;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+main {
+  min-height: calc(100vh - 60px);
+  transition: margin-left 0.3s ease;
+  padding-left: 16px;
+  padding-right: 16px;
 }
-.btn-primary {
-  background-color: #f97316;
-  border-color: #f97316;
+.shadow-md {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
-.btn-primary:hover {
-  background-color: #ea580c;
-  border-color: #ea580c;
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
-.border-left-primary {
-  border-left: 0.25rem solid #1e40af !important;
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
-.border-left-success {
-  border-left: 0.25rem solid #2ecc71 !important;
+.rounded-lg {
+  border-radius: 0.75rem;
 }
-.border-left-info {
-  border-left: 0.25rem solid #f97316 !important;
+.container {
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
 }
-.border-left-warning {
-  border-left: 0.25rem solid #f1c40f !important;
-}
-@media (max-width: 991px) {
-  .sidebar {
-    width: 60px;
+@media (max-width: 640px) {
+  aside {
+    width: 16px !important;
+    transform: translateX(-100%);
   }
-  .sidebar .nav-link span {
+  main {
+    margin-left: 0;
+    padding: 8px;
+  }
+  .flex-col md:flex-row {
+    flex-direction: column;
+  }
+  .w-full md:w-auto {
+    width: 100%;
+  }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+  aside {
+    width: 64px !important;
+  }
+  main {
+    margin-left: 64px;
+    padding: 12px;
+  }
+  .sidebar span {
     display: none;
   }
-  .sidebar .nav-link i {
-    font-size: 1.5rem;
+}
+@media (min-width: 1025px) {
+  aside {
+    width: 64px;
   }
-  .flex-grow-1 {
-    margin-left: 60px !important;
+  main {
+    margin-left: 64px;
+    padding: 16px;
+  }
+  aside:hover {
+    width: 256px;
+  }
+  aside:hover .sidebar span {
+    display: inline;
   }
 }
