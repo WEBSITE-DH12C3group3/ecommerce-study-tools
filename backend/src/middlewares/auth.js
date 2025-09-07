@@ -1,30 +1,23 @@
-// middleware/auth.js
-const { User, Role } = require("../models"); // Giả định models/index.js export User và Role
+const { User, Role } = require("../models");
 
 // Middleware kiểm tra quyền admin (dựa trên session)
 exports.isAdmin = async (req, res, next) => {
   try {
     // Kiểm tra xem có session user không
-    if (!req.session.user || !req.session.user.user_id) {
-      return res.status(401).json({ message: "Vui lòng đăng nhập" });
+    if (!req.session.user || !req.session.user.id) {
+      return res.redirect('/login');
     }
 
-    // Lấy thông tin user từ database
-    const user = await User.findByPk(req.session.user.user_id, {
-      include: [{ model: Role, attributes: ["role_name"] }],
-    });
+    // Lấy thông tin user từ session (không cần query DB nếu đã lưu đủ dữ liệu)
+    const user = req.session.user;
 
-    if (!user) {
-      return res.status(401).json({ message: "Người dùng không tồn tại" });
-    }
-
-    // Kiểm tra vai trò admin
-    if (user.Role && user.Role.role_name === "admin") {
-      req.user = user; // Gắn thông tin user vào request để sử dụng sau nếu cần
+    // Kiểm tra vai trò admin dựa trên role_id
+    if (user.role_id === 1) { // Giả định role_id = 1 là admin
+      req.user = user;
       return next();
     }
 
-    return res.status(403).json({ message: "Yêu cầu quyền admin" });
+    return res.redirect('/'); // Chuyển hướng về trang chủ nếu không phải admin
   } catch (error) {
     console.error("Lỗi middleware isAdmin:", error);
     return res.status(500).json({ message: "Lỗi server", error: error.message });
@@ -34,14 +27,13 @@ exports.isAdmin = async (req, res, next) => {
 // Middleware kiểm tra quyền admin (dựa trên JWT - tùy chọn)
 exports.isAdminJWT = async (req, res, next) => {
   const jwt = require("jsonwebtoken");
-  const token = req.headers.authorization?.split(" ")[1]; // Lấy token từ header Authorization: Bearer <token>
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ message: "Vui lòng cung cấp token" });
   }
 
   try {
-    // Giải mã token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret");
     const user = await User.findByPk(decoded.user_id, {
       include: [{ model: Role, attributes: ["role_name"] }],
@@ -51,9 +43,9 @@ exports.isAdminJWT = async (req, res, next) => {
       return res.status(401).json({ message: "Người dùng không tồn tại" });
     }
 
-    // Kiểm tra vai trò admin
-    if (user.Role && user.Role.role_name === "admin") {
-      req.user = user; // Gắn thông tin user vào request
+    // Kiểm tra vai trò admin dựa trên role_id từ DB (vì JWT không lưu role_id trực tiếp)
+    if (user.role_id === 1) {
+      req.user = user;
       return next();
     }
 

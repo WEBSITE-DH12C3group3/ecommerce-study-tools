@@ -6,4 +6,7 @@ const authController = require('../controllers/authController');
 router.post('/register', authController.register);
 // Route đăng nhập
 router.post('/login', authController.login);
+// Route đăng xuất
+router.get('/logout', authController.logout);
+
 module.exports = router;

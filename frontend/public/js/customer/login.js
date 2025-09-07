@@ -35,12 +35,8 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     const data = await response.json();
     if (response.ok) {
       alert('Đăng nhập thành công!');
-      // Chuyển hướng dựa trên role
-      if (data.user.role_id !== 2) {
-        window.location.href = '/admin';
-      } else {
-        window.location.href = '/';
-      }
+      // Chuyển hướng để cập nhật dropdown
+      window.location.href = data.user.role_id !== 3 ? '/admin' : '/';
     } else {
       alert(data.message || 'Đăng nhập thất bại, vui lòng thử lại.');
     }

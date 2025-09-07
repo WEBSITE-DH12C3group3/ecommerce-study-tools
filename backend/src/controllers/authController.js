@@ -27,7 +27,7 @@ const register = async (req, res) => {
       phone,
       address,
       password: hashedPassword,
-      role_id: 2, // Gán role_id mặc định cho người dùng thường
+      role_id: 3, // Gán role_id mặc định cho người dùng thường
     });
 
     return res.status(201).json({ message: 'Đăng ký thành công', user: { id: newUser.user_id, full_name, email } });
@@ -77,4 +77,21 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const logout = (req, res) => {
+  try {
+    // Xóa session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Lỗi đăng xuất:', err);
+        return res.status(500).json({ message: 'Lỗi server, vui lòng thử lại sau' });
+      }
+      // Chuyển hướng về trang chủ
+      res.redirect('/');
+    });
+  } catch (error) {
+    console.error('Lỗi đăng xuất:', error);
+    res.status(500).json({ message: 'Lỗi server, vui lòng thử lại sau' });
+  }
+};
+
+module.exports = { register, login, logout };
