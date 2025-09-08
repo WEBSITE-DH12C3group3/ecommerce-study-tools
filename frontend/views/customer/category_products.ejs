@@ -145,7 +145,9 @@
         .map(product => `
           <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 animate__animated animate__fadeIn">
             <div class="relative">
-              <img src="${product.image_url || 'https://via.placeholder.com/300x200?text=Product'}" alt="${product.product_name}" class="w-full h-56 object-cover hover:scale-105 transition-transform duration-300">
+              <img src="${product.image_url ? `/uploads/${product.image_url}` : 'https://via.placeholder.com/300x200?text=Product'}" 
+                  alt="${product.product_name}" 
+                  class="w-full h-56 object-cover hover:scale-105 transition-transform duration-300">
               <button class="absolute top-2 right-2 favorite-btn" data-product-id="${product.product_id}" title="Yêu thích">
                 <i class="fas fa-heart text-2xl ${favorites[product.product_id] ? 'text-red-500' : 'text-gray-400'} hover:text-red-500 transition-colors duration-300"></i>
               </button>

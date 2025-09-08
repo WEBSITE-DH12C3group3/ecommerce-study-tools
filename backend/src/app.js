@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
+const methodOverride = require("method-override");
+
 const { isAdmin } = require("./middlewares/auth");
 require("dotenv").config();
 
@@ -13,8 +15,8 @@ const brandRoutes = require("./routes/brandRoutes");
 const userRoutes = require("./routes/userRoute");
 
 const productController = require("./controllers/productController");
-
 const sequelize = require("./config/db");
+const supplierRoutes = require("./routes/supplierRoutes"); 
 
 const app = express();
 
@@ -22,6 +24,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "../../frontend/public")));
 
 // Cấu hình session
@@ -53,7 +56,13 @@ app.use("/api", categoryRoutes);
 app.use("/api", authRoutes);
 app.use("/api", brandRoutes);
 app.use("/api", productRoutes); // Mount productRoutes cho cả customer và admin
+
 app.use("/api", userRoutes);
+
+app.use("/api", categoryRoutes);
+app.use("/api", supplierRoutes);
+
+
 // Trang chủ
 app.get("/", (req, res) => {
   res.render("customer/home", { session: req.session });
@@ -113,7 +122,7 @@ app.get("/logout", (req, res) => {
   });
 });
 
-// Admin pages
+
 app.get("/admin", isAdmin, (req, res) => {
   res.redirect("/admin/dashboard");
 });
@@ -125,8 +134,32 @@ app.get("/admin/products", isAdmin, (req, res) => {
   res.render("admin/product/products", { session: req.session });
 });
 
+
 app.get("/admin/users", isAdmin, (req, res) => {
   res.render("admin/user/users", { session: req.session });
 });
 
+
+app.get("/admin/categories", isAdmin, (req, res) => {
+  res.render("admin/category/categories", { session: req.session });
+});
+
+app.get("/admin/suppliers", isAdmin, (req, res) => {
+  res.render("admin/suppliers/index", { session: req.session });
+});
+// Trang thêm sản phẩm
+app.get("/admin/products/add", isAdmin, async (req, res) => {
+  const categories = await Category.findAll();
+  const brands = await Brand.findAll();
+  res.render("admin/product/products_addedit", { product: null, categories, brands, session: req.session });
+});
+
+// Trang sửa sản phẩm
+app.get("/admin/products/edit/:id", isAdmin, async (req, res) => {
+  const product = await Product.findByPk(req.params.id);
+  const categories = await Category.findAll();
+  const brands = await Brand.findAll();
+  res.render("admin/product/products_addedit", { product, categories, brands, session: req.session });
+});
 module.exports = app;
+

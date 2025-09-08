@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= product ? "Sửa sản phẩm" : "Thêm sản phẩm" %> | HocTapStore Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+  <%- include('../../partials/admin_header', { title: product ? "Sửa sản phẩm" : "Thêm sản phẩm" }) %>
+
+  <div class="flex pt-16">
+    <%- include('../../partials/admin_sidebar') %>
+
+    <main class="flex-1 ml-0 lg:ml-64 py-12 px-8">
+      <div class="bg-white p-8 rounded-xl shadow-md max-w-lg mx-auto">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800"><%= product ? "Sửa sản phẩm" : "Thêm sản phẩm" %></h2>
+
+        <form action="<%= product ? '/api/admin/products/' + product.product_id : '/api/admin/products' %>" method="POST" enctype="multipart/form-data">
+          <% if (product) { %>
+            <input type="hidden" name="_method" value="PUT">
+          <% } %>
+
+          <div class="mb-4">
+            <label class="block mb-2">Tên sản phẩm</label>
+            <input type="text" name="product_name" value="<%= product?.product_name || '' %>" required class="w-full border rounded p-3">
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2">Giá</label>
+            <input type="number" name="price" value="<%= product?.price || '' %>" required class="w-full border rounded p-3">
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2">Tồn kho</label>
+            <input type="number" name="stock_quantity" value="<%= product?.stock_quantity || '' %>" required class="w-full border rounded p-3">
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2">Danh mục</label>
+            <select name="category_id" class="w-full border rounded p-3">
+              <% categories.forEach(c => { %>
+                <option value="<%= c.category_id %>" <%= product && product.category_id === c.category_id ? "selected" : "" %>>
+                  <%= c.category_name %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2">Thương hiệu</label>
+            <select name="brand_id" class="w-full border rounded p-3">
+              <% brands.forEach(b => { %>
+                <option value="<%= b.brand_id %>" <%= product && product.brand_id === b.brand_id ? "selected" : "" %>>
+                  <%= b.brand_name %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2">Mô tả</label>
+            <textarea name="description" class="w-full border rounded p-3"><%= product?.description || '' %></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="block mb-2">Hình ảnh</label>
+            <input type="file" name="image" class="w-full">
+            <% if (product?.image_url) { %>
+              <img src="/uploads/<%= product.image_url %>" class="w-20 mt-2">
+            <% } %>
+          </div>
+
+          <div class="flex gap-4">
+            <button type="submit" class="bg-blue-600 text-white py-2 px-6 rounded"><%= product ? "Cập nhật" : "Thêm mới" %></button>
+            <a href="/admin/products" class="bg-gray-300 py-2 px-6 rounded">Hủy</a>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

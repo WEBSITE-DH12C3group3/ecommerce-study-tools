@@ -46,11 +46,20 @@ const Product = sequelize.define(
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
+    is_deleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    },
+    deleted_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     tableName: "products",
     timestamps: false,
   }
+  
 );
 
 module.exports = Product;

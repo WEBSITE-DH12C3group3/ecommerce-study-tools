@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nhà cung cấp | HocTapStore Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+  <%- include('../../partials/admin_header', { title: 'Quản lý Nhà cung cấp' }) %>
+
+  <div class="flex pt-16">
+    <%- include('../../partials/admin_sidebar') %>
+
+    <main class="flex-1 ml-0 lg:ml-64 py-12 px-8 transition-all duration-300 w-full max-w-full">
+      <!-- Notification -->
+      <div id="notification" class="hidden fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg transition-opacity duration-300">
+        <span id="notification-message"></span>
+      </div>
+
+      <!-- Tìm kiếm + nút -->
+      <div class="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-6 rounded-xl shadow-md">
+        <input id="searchInput" type="text" placeholder="Tìm kiếm nhà cung cấp..." class="border border-gray-200 rounded-lg p-3 w-full sm:w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"/>
+        <div class="flex gap-4">
+          <button id="addSupplierBtn" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+            <i class="fas fa-plus mr-2"></i> Thêm nhà cung cấp
+          </button>
+          <button id="exportCsvBtn" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300">
+            <i class="fas fa-file-export mr-2"></i> Xuất CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Bảng -->
+      <div class="bg-white p-6 rounded-xl shadow-md overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-700">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-4 py-3">ID</th>
+              <th class="px-4 py-3">Tên nhà cung cấp</th>
+              <th class="px-4 py-3">Thông tin liên hệ</th>
+              <th class="px-4 py-3">Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="supplierTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Phân trang -->
+      <div class="mt-6 flex justify-center items-center gap-4">
+        <button id="prevPage" class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition duration-300" disabled>Trước</button>
+        <span id="pageInfo" class="text-gray-800 font-medium text-lg">Trang 1</span>
+        <button id="nextPage" class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300">Tiếp</button>
+      </div>
+
+      <!-- Modal thêm/sửa -->
+      <div id="supplierModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-xl w-full max-w-lg">
+          <h2 id="modalTitle" class="text-2xl font-bold mb-6 text-gray-800">Thêm nhà cung cấp</h2>
+          <form id="supplierForm">
+            <input type="hidden" id="supplierId" name="supplier_id" />
+            <div class="mb-4">
+              <label class="block text-gray-700 font-medium mb-2">Tên nhà cung cấp</label>
+              <input id="supplierName" name="supplier_name" type="text" required class="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 font-medium mb-2">Thông tin liên hệ</label>
+              <textarea id="contactInfo" name="contact_info" class="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Email/SDT/Địa chỉ..."></textarea>
+            </div>
+            <div class="flex gap-4">
+              <button type="submit" class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300">Lưu</button>
+              <button type="button" id="closeModal" class="bg-gray-300 text-gray-800 py-2 px-6 rounded-lg hover:bg-gray-400 transition duration-300">Đóng</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <script src="/js/admin/suppliers.js"></script>
+</body>
+</html>
+    
