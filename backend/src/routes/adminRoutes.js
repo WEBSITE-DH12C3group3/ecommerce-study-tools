@@ -67,6 +67,8 @@ router.delete('/products/:id', isAdmin, async (req, res) => {
   }
 });
 
-// Tương tự cho categories, brands,...
+router.get('/suppliers', (req, res) => {
+  res.render('admin/suppliers/index');
+});
 
 module.exports = router;
