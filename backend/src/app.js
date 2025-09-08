@@ -11,6 +11,9 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes"); // Đã có
 const brandRoutes = require("./routes/brandRoutes");
+
+const userRoutes = require("./routes/userRoute");
+
 const productController = require("./controllers/productController");
 const sequelize = require("./config/db");
 const supplierRoutes = require("./routes/supplierRoutes"); 
@@ -39,18 +42,23 @@ app.set("views", path.join(__dirname, "../../frontend/views"));
 app.set("view engine", "ejs");
 
 // Đồng bộ database
-sequelize.authenticate()
+sequelize
+  .authenticate()
   .then(() => console.log("Kết nối DB thành công"))
-  .catch(err => console.error("Lỗi DB:", err));
-sequelize.sync({ force: false })
+  .catch((err) => console.error("Lỗi DB:", err));
+sequelize
+  .sync({ force: false })
   .then(() => console.log("Database synced"))
-  .catch(err => console.error("Lỗi đồng bộ DB:", err));
+  .catch((err) => console.error("Lỗi đồng bộ DB:", err));
 
 // Routes
 app.use("/api", categoryRoutes);
 app.use("/api", authRoutes);
 app.use("/api", brandRoutes);
 app.use("/api", productRoutes); // Mount productRoutes cho cả customer và admin
+
+app.use("/api", userRoutes);
+
 app.use("/api", categoryRoutes);
 app.use("/api", supplierRoutes);
 
@@ -93,7 +101,6 @@ app.get("/products", async (req, res) => {
   }
 });
 
-
 // Trang đăng ký
 app.get("/register", (req, res) => {
   res.render("customer/register", { session: req.session });
@@ -106,7 +113,7 @@ app.get("/login", (req, res) => {
 
 // Đăng xuất
 app.get("/logout", (req, res) => {
-  req.session.destroy(err => {
+  req.session.destroy((err) => {
     if (err) {
       console.error("Lỗi đăng xuất:", err);
       return res.status(500).send("Lỗi server, vui lòng thử lại sau");
@@ -126,6 +133,12 @@ app.get("/admin/dashboard", isAdmin, (req, res) => {
 app.get("/admin/products", isAdmin, (req, res) => {
   res.render("admin/product/products", { session: req.session });
 });
+
+
+app.get("/admin/users", isAdmin, (req, res) => {
+  res.render("admin/user/users", { session: req.session });
+});
+
 
 app.get("/admin/categories", isAdmin, (req, res) => {
   res.render("admin/category/categories", { session: req.session });
@@ -149,3 +162,4 @@ app.get("/admin/products/edit/:id", isAdmin, async (req, res) => {
   res.render("admin/product/products_addedit", { product, categories, brands, session: req.session });
 });
 module.exports = app;
+
