@@ -1,5 +1,6 @@
 let currentPage = 1;
 const limit = 10;
+let showDeleted = false; // trạng thái: đang xem sản phẩm đã xóa hay chưa
 
 // Hàm hiển thị thông báo
 function showNotification(message, isError = false) {
@@ -23,61 +24,81 @@ async function loadProducts(page = 1) {
   const sort = document.getElementById('sortFilter').value;
 
   try {
-    console.log('Gọi API:', `/api/admin/products?page=${page}&limit=${limit}&search=${search}&category_id=${category}&brand_id=${brand}&priceSort=${sort}`);
-    const response = await fetch(`/api/admin/products?page=${page}&limit=${limit}&search=${search}&category_id=${category}&brand_id=${brand}&priceSort=${sort}`, {
-    headers: {
+    let url = `/api/admin/products?page=${page}&limit=${limit}&search=${search}&category_id=${category}&brand_id=${brand}&priceSort=${sort}`;
+    if (showDeleted) url += "&status=deleted";
+
+    const response = await fetch(url, {
+      headers: {
         'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
         'Accept': 'application/json',
-    },
+      },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Lỗi ${response.status}: ${errorData.message || 'Không thể lấy sản phẩm'}`);
-    }
+    if (!response.ok) throw new Error("Không thể lấy sản phẩm");
     const data = await response.json();
-    console.log('Dữ liệu API:', data);
+
     renderProducts(data.products);
     updatePagination(data.totalPages, page);
   } catch (error) {
     showNotification(`Lỗi khi tải sản phẩm: ${error.message}`, true);
-    console.error('Lỗi:', error);
-    document.getElementById('productTableBody').innerHTML = '<tr><td colspan="8" class="text-center text-gray-500 py-4">Không thể tải sản phẩm</td></tr>';
   }
 }
 
 // Hàm hiển thị sản phẩm
 function renderProducts(products) {
-  const tbody = document.getElementById('productTableBody');
+  const tbody = document.getElementById("productTableBody");
+  tbody.innerHTML = "";
+
   if (!products || products.length === 0) {
     tbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-500 py-4">Không có sản phẩm</td></tr>';
     return;
   }
-  tbody.innerHTML = products
-    .map(product => `
-      <tr class="border-t">
-        <td class="px-4 py-3">${product.product_id}</td>
-        <td class="px-4 py-3">
-        <img src="${product.image_url ? `/upload/${product.image_url}` : 'https://via.placeholder.com/50'}" alt="${product.product_name}" 
-        class="w-12 h-12 object-cover rounded">
 
-        </td>
-        <td class="px-4 py-3">${escapeHTML(product.product_name)}</td>
-        <td class="px-4 py-3">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</td>
-        <td class="px-4 py-3">${product.stock_quantity}</td>
-        <td class="px-4 py-3">${product.Category ? escapeHTML(product.Category.category_name) : ''}</td>
-        <td class="px-4 py-3">${product.Brand ? escapeHTML(product.Brand.brand_name) : ''}</td>
-        <td class="px-4 py-3 flex gap-2">
-          <button onclick="editProduct(${product.product_id})" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition">
-            <i class="fas fa-edit"></i> Sửa
-          </button>
-          <button onclick="deleteProduct(${product.product_id})" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-            <i class="fas fa-trash"></i> Xóa
-          </button>
-        </td>
+  products.forEach(p => {
+    let actions = "";
+    if (showDeleted) {
+      actions = `
+        <button class="restoreBtn bg-green-600 text-white py-1 px-3 rounded" data-id="${p.product_id}">
+          <i class="fas fa-undo"></i> Khôi phục
+        </button>
+        <button class="hardDeleteBtn bg-red-600 text-white py-1 px-3 rounded" data-id="${p.product_id}">
+          <i class="fas fa-trash-alt"></i> Xóa hẳn
+        </button>
+      `;
+    } else {
+      actions = `
+        <button onclick="window.location.href='/admin/products/edit/${p.product_id}'"
+          class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+          <i class="fas fa-edit"></i> Sửa
+        </button>
+        <button onclick="deleteProduct(${p.product_id})"
+          class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+          <i class="fas fa-trash"></i> Xóa
+        </button>
+      `;
+    }
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${p.product_id}</td>
+        <td><img src="/uploads/${p.image_url}" class="w-16 h-16 object-cover rounded"/></td>
+        <td>${p.product_name}</td>
+        <td>${p.price}</td>
+        <td>${p.stock_quantity}</td>
+        <td>${p.Category?.category_name || ''}</td>
+        <td>${p.Brand?.brand_name || ''}</td>
+        <td>${actions}</td>
       </tr>
-    `)
-    .join('');
+    `;
+  });
+
+  // Gắn sự kiện
+  document.querySelectorAll(".restoreBtn").forEach(btn => {
+    btn.addEventListener("click", () => restoreProduct(btn.dataset.id));
+  });
+  document.querySelectorAll(".hardDeleteBtn").forEach(btn => {
+    btn.addEventListener("click", () => hardDeleteProduct(btn.dataset.id));
+  });
 }
 
 // Hàm cập nhật phân trang
@@ -116,36 +137,15 @@ async function loadBrands() {
   }
 }
 
-// Hàm sửa sản phẩm
-async function editProduct(id) {
-  try {
-    const response = await fetch(`/api/admin/products/${id}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-      },
-    });
-    if (!response.ok) throw new Error('Lỗi khi lấy sản phẩm');
-    const product = await response.json();
-    document.getElementById('productId').value = product.product_id;
-    document.getElementById('productName').value = product.product_name;
-    document.getElementById('productPrice').value = product.price;
-    document.getElementById('stockQuantity').value = product.stock_quantity;
-    document.getElementById('categoryId').value = product.category_id;
-    document.getElementById('brandId').value = product.brand_id;
-    document.getElementById('description').value = product.description || '';
-    document.getElementById('modalTitle').textContent = 'Sửa sản phẩm';
-    document.getElementById('productModal').classList.remove('hidden');
-  } catch (error) {
-    showNotification('Lỗi khi tải sản phẩm', true);
-    console.error('Lỗi:', error);
-  }
-}
 
 // Hàm xóa sản phẩm
 async function deleteProduct(id) {
   if (confirm('Xác nhận xóa sản phẩm này?')) {
     try {
-      const response = await fetch(`/api/admin/products/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/admin/products/${id}`, { 
+        method: 'DELETE',
+        credentials: 'include'   // Gửi cookie session kèm request
+      });
       if (!response.ok) throw new Error('Lỗi khi xóa sản phẩm');
       showNotification('Xóa sản phẩm thành công');
       loadProducts(currentPage);
@@ -155,6 +155,7 @@ async function deleteProduct(id) {
     }
   }
 }
+
 
 // Hàm xuất CSV
 async function exportToCsv() {
@@ -244,41 +245,117 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Submit form
-  document.getElementById('productForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('product_name', document.getElementById('productName').value);
-    formData.append('price', document.getElementById('productPrice').value);
-    formData.append('stock_quantity', document.getElementById('stockQuantity').value);
-    formData.append('category_id', document.getElementById('categoryId').value);
-    formData.append('brand_id', document.getElementById('brandId').value);
-    formData.append('description', document.getElementById('description').value);
-    if (document.getElementById('productImage').files[0]) {
-      formData.append('image', document.getElementById('productImage').files[0]);
-    }
+document.getElementById('productForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('productId').value;
+  const url = id ? `/api/admin/products/${id}` : '/api/admin/products';
+  const method = id ? 'PUT' : 'POST';
 
-    const id = document.getElementById('productId').value;
-    const method = id ? 'PUT' : 'POST';
-    const url = id ? `/api/admin/products/${id}` : '/api/admin/products';
+  const formData = new FormData(document.getElementById('productForm'));
 
-    try {
-      const response = await fetch(url, {
-        method,
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`, // Nếu dùng JWT
-        },
-      });
-      if (!response.ok) throw new Error('Lỗi khi lưu sản phẩm');
-      showNotification(id ? 'Cập nhật sản phẩm thành công' : 'Thêm sản phẩm thành công');
-      document.getElementById('productModal').classList.add('hidden');
-      loadProducts(currentPage);
-    } catch (error) {
-      showNotification('Lỗi khi lưu sản phẩm', true);
-      console.error('Lỗi:', error);
-    }
-  });
+  try {
+    const response = await fetch(url, { method, body: formData });
+    if (!response.ok) throw new Error('Lỗi khi lưu sản phẩm');
+    showNotification('Lưu sản phẩm thành công');
+    document.getElementById('productModal').classList.add('hidden');
+    loadProducts(currentPage);
+  } catch (err) {
+    showNotification(err.message, true);
+  }
+});
+
 
   // Export CSV
   document.getElementById('exportCsvBtn').addEventListener('click', exportToCsv);
 });
+
+document.getElementById("showDeletedBtn").addEventListener("click", () => {
+  showDeleted = !showDeleted; // đảo trạng thái
+  loadProducts(1);
+
+  // đổi text nút để dễ hiểu
+  const btn = document.getElementById("showDeletedBtn");
+  if (showDeleted) {
+    btn.textContent = "Quay lại danh sách";
+    btn.classList.add("bg-gray-600");
+  } else {
+    btn.textContent = "Sản phẩm đã xóa";
+    btn.classList.remove("bg-gray-600");
+  }
+});
+
+
+
+// function renderTable(products, deleted = false) {
+//   const tbody = document.getElementById("productTableBody");
+//   tbody.innerHTML = "";
+
+//   products.forEach(p => {
+//     let actions = "";
+//     if (deleted) {
+//       actions = `
+//         <button class="restoreBtn bg-green-600 text-white py-1 px-3 rounded" data-id="${p.product_id}">
+//           <i class="fas fa-undo"></i> Khôi phục
+//         </button>
+//         <button class="hardDeleteBtn bg-red-600 text-white py-1 px-3 rounded" data-id="${p.product_id}">
+//           <i class="fas fa-trash-alt"></i> Xóa hẳn
+//         </button>
+//       `;
+//     } else {
+//       actions = `
+//         <button class="editBtn bg-yellow-500 text-white py-1 px-3 rounded" data-id="${p.product_id}">
+//           <i class="fas fa-edit"></i> Sửa
+//         </button>
+//         <button class="deleteBtn bg-red-600 text-white py-1 px-3 rounded" data-id="${p.product_id}">
+//           <i class="fas fa-trash"></i> Xóa
+//         </button>
+//       `;
+//     }
+
+//     tbody.innerHTML += `
+//       <tr>
+//         <td>${p.product_id}</td>
+//         <td><img src="/uploads/${p.image_url}" class="w-16 h-16 object-cover rounded"/></td>
+//         <td>${p.product_name}</td>
+//         <td>${p.price}</td>
+//         <td>${p.stock_quantity}</td>
+//         <td>${p.Category?.category_name || ''}</td>
+//         <td>${p.Brand?.brand_name || ''}</td>
+//         <td>${actions}</td>
+//       </tr>
+//     `;
+//   });
+
+//   // attach sự kiện restore / hard delete
+//   document.querySelectorAll(".restoreBtn").forEach(btn => {
+//     btn.addEventListener("click", () => restoreProduct(btn.dataset.id));
+//   });
+//   document.querySelectorAll(".hardDeleteBtn").forEach(btn => {
+//     btn.addEventListener("click", () => hardDeleteProduct(btn.dataset.id));
+//   });
+// }
+
+function restoreProduct(id) {
+  fetch(`/api/admin/products/${id}/restore`, { method: "PUT" })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message);
+      loadProducts(1, true);
+    });
+}
+
+function hardDeleteProduct(id) {
+  if (!confirm("Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này?")) return;
+
+  fetch(`/api/admin/products/${id}/hard`, { method: "DELETE" })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        alert(data.error);
+      } else {
+        alert(data.message);
+        showDeleted = true;
+        loadProducts(1, true);
+      }
+    });
+}

@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
+const methodOverride = require("method-override");
+
 const { isAdmin } = require("./middlewares/auth");
 require("dotenv").config();
 
@@ -19,6 +21,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "../../frontend/public")));
 
 // Cấu hình session
@@ -131,5 +134,18 @@ app.get("/admin/categories", isAdmin, (req, res) => {
 app.get("/admin/suppliers", isAdmin, (req, res) => {
   res.render("admin/suppliers/index", { session: req.session });
 });
+// Trang thêm sản phẩm
+app.get("/admin/products/add", isAdmin, async (req, res) => {
+  const categories = await Category.findAll();
+  const brands = await Brand.findAll();
+  res.render("admin/product/products_addedit", { product: null, categories, brands, session: req.session });
+});
 
+// Trang sửa sản phẩm
+app.get("/admin/products/edit/:id", isAdmin, async (req, res) => {
+  const product = await Product.findByPk(req.params.id);
+  const categories = await Category.findAll();
+  const brands = await Brand.findAll();
+  res.render("admin/product/products_addedit", { product, categories, brands, session: req.session });
+});
 module.exports = app;

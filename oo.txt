@@ -1,0 +1,75 @@
+ecommerce-study-tools
+ ┣ .git
+ ┃ ┃ ┣ backend
+ ┃ ┣ src
+ ┃ ┃ ┣ config
+ ┃ ┃ ┃ ┣ db.js
+ ┃ ┃ ┃ ┗ sellschoolsupplies.sql
+ ┃ ┃ ┣ controllers
+ ┃ ┃ ┃ ┣ authController.js
+ ┃ ┃ ┃ ┣ brandController.js
+ ┃ ┃ ┃ ┣ categoryController.js
+ ┃ ┃ ┃ ┗ productController.js
+ ┃ ┃ ┣ middlewares
+ ┃ ┃ ┃ ┣ auth.js
+ ┃ ┃ ┃ ┗ upload.js
+ ┃ ┃ ┣ models
+ ┃ ┃ ┃ ┣ Attribute.js
+ ┃ ┃ ┃ ┣ Brand.js
+ ┃ ┃ ┃ ┣ category.js
+ ┃ ┃ ┃ ┣ index.js
+ ┃ ┃ ┃ ┣ Order.js
+ ┃ ┃ ┃ ┣ Product.js
+ ┃ ┃ ┃ ┣ ProductAttribute.js
+ ┃ ┃ ┃ ┣ Role.js
+ ┃ ┃ ┃ ┗ User.js
+ ┃ ┃ ┣ routes
+ ┃ ┃ ┃ ┣ adminRoutes.js
+ ┃ ┃ ┃ ┣ authRoutes.js
+ ┃ ┃ ┃ ┣ brandRoutes.js
+ ┃ ┃ ┃ ┣ categoryRoutes.js
+ ┃ ┃ ┃ ┗ productRoutes.js
+ ┃ ┃ ┣ utils
+ ┃ ┃ ┣ app.js
+ ┃ ┃ ┗ server.js
+ ┃ ┣ .env
+ ┃ ┣ package-lock.json
+ ┃ ┗ package.json
+ ┣ frontend
+ ┃ ┣ public
+ ┃ ┃ ┣ css
+ ┃ ┃ ┃ ┗ admin.css
+ ┃ ┃ ┣ images
+ ┃ ┃ ┣ js
+ ┃ ┃ ┃ ┣ admin
+ ┃ ┃ ┃ ┃ ┣ categories.js
+ ┃ ┃ ┃ ┃ ┗ products.js
+ ┃ ┃ ┃ ┗ customer
+ ┃ ┃ ┃ ┃ ┣ category.js
+ ┃ ┃ ┃ ┃ ┣ login.js
+ ┃ ┃ ┃ ┃ ┗ register.js
+ ┃ ┃ ┗ uploads
+ ┃ ┃ ┃ ┣ 1755592071741-814100542.jpg
+ ┃ ┣ views
+ ┃ ┃ ┣ admin
+ ┃ ┃ ┃ ┣ category
+ ┃ ┃ ┃ ┃ ┗ categories.ejs
+ ┃ ┃ ┃ ┣ product
+ ┃ ┃ ┃ ┃ ┣ products.ejs
+ ┃ ┃ ┃ ┃ ┗ products_addedit.ejs
+ ┃ ┃ ┃ ┣ admin_layout.ejs
+ ┃ ┃ ┃ ┗ dashboard.ejs
+ ┃ ┃ ┣ customer
+ ┃ ┃ ┃ ┣ category_products.ejs
+ ┃ ┃ ┃ ┣ home.ejs
+ ┃ ┃ ┃ ┣ login.ejs
+ ┃ ┃ ┃ ┗ register.ejs
+ ┃ ┃ ┗ partials
+ ┃ ┃ ┃ ┣ about.ejs
+ ┃ ┃ ┃ ┣ admin_header.ejs
+ ┃ ┃ ┃ ┣ admin_sidebar.ejs
+ ┃ ┃ ┃ ┣ contact.ejs
+ ┃ ┃ ┃ ┣ footer.ejs
+ ┃ ┃ ┃ ┗ header.ejs
+ ┃ ┗ package.json
+ ┗ README.md
