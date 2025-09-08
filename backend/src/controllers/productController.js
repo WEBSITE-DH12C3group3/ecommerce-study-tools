@@ -5,7 +5,6 @@ exports.getProducts = async (req, res) => {
   try {
     const { category_id, brand_id, page = 1, limit = 10, search = '', priceSort = '', stock = '' } = req.query;
     const offset = (page - 1) * limit;
-
     let where = {};
     if (category_id) where.category_id = category_id;
     if (brand_id) where.brand_id = brand_id;

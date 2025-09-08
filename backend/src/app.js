@@ -10,7 +10,6 @@ const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes"); // Đã có
 const brandRoutes = require("./routes/brandRoutes");
 const productController = require("./controllers/productController");
-
 const sequelize = require("./config/db");
 
 const app = express();
@@ -48,6 +47,7 @@ app.use("/api", categoryRoutes);
 app.use("/api", authRoutes);
 app.use("/api", brandRoutes);
 app.use("/api", productRoutes); // Mount productRoutes cho cả customer và admin
+app.use("/api", categoryRoutes);
 
 // Trang chủ
 app.get("/", (req, res) => {
@@ -120,5 +120,10 @@ app.get("/admin/dashboard", isAdmin, (req, res) => {
 app.get("/admin/products", isAdmin, (req, res) => {
   res.render("admin/product/products", { session: req.session });
 });
+// Trang quản lý danh mục
+app.get("/admin/categories", isAdmin, (req, res) => {
+  res.render("admin/category/categories", { session: req.session });
+});
+
 
 module.exports = app;
